@@ -7,11 +7,10 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 public class Bot extends DiscordBot {
 	//TODO add something to store stuff from flagger
 	
-	
 	public Bot(BotInit init) {
 		super(init);
 		//add flagger stuffs
-		main.getEventChain(MessageReceivedEvent.class).addListener("Flagger", new MessageFlagger());
+		main.getEventChain(MessageReceivedEvent.class).addListener("Flagger", new MessageFlagger(react));
 	}
 
 	@Override
