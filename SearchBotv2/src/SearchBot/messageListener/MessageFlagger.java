@@ -18,5 +18,7 @@ public class MessageFlagger implements BiPredicate<MessageReceivedEvent, BotGlob
 		//add Reaction to Reaction Controller Stuffs
 		return false;
 	}
+	
+	
 
 }

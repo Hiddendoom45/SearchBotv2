@@ -1,8 +1,6 @@
 package SearchBot.global;
 
-import JDABotFramework.commands.Ping;
 import JDABotFramework.launcher.DiscordBot;
-import SearchBot.global.record.Modules;
 import SearchBot.messageListener.MessageFlagger;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
@@ -14,8 +12,6 @@ public class Bot extends DiscordBot {
 		super(init);
 		//add flagger stuffs
 		main.getEventChain(MessageReceivedEvent.class).addListener("Flagger", new MessageFlagger());
-		//add Core commands
-		cmd.addCommand("ping", new Ping(config), Modules.Core.toString());
 	}
 
 	@Override
@@ -24,12 +20,15 @@ public class Bot extends DiscordBot {
 	}
 
 	@Override
-	protected String help() {
-		return null;
+	public String help(MessageReceivedEvent event) {
+		String s = "__***Help List***__\n"
+				+ "Use "+config.getPrefix(event.getGuild())+"help [command] "
+				+ "to get more info on a specific command, i.e.: "+config.getPrefix(event.getGuild())+"help ping\n\n";
+		return s;
 	}
 
 	@Override
-	protected String modHelp() {
+	public String modHelp(MessageReceivedEvent event) {
 		return null;
 	}
 
