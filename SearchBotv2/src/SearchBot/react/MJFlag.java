@@ -1,5 +1,8 @@
 package SearchBot.react;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 
 import JDABotFramework.react.Reaction;
@@ -10,8 +13,39 @@ import net.dv8tion.jda.core.entities.MessageReaction.ReactionEmote;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.core.events.message.react.MessageReactionRemoveEvent;
 
+/**
+ * Thing that actually tracks points
+ * @author Allen
+ *
+ */
 public class MJFlag implements Reaction {
 	private final HashMap<EmoteValues,Integer> reactions = new HashMap<EmoteValues,Integer>();
+	private final long messageID;
+	public MJFlag(long messageID){
+		this.messageID=messageID;
+	}
+	/**
+	 * Constructs the reaction using the current row of the resultset.
+	 * Must contain column names matching {@link EmoteValues} textName field
+	 * @param s
+	 */
+	public MJFlag(ResultSet s){
+		long l;
+		try {
+			l = s.getLong("ID");
+		} catch (SQLException e2) {
+			l=-1;//generic error ID;
+		}
+		messageID = l;
+		for(EmoteValues e:EmoteValues.values()){
+			try {
+				int i = s.getInt(e.textName);
+				if(i!=0){
+					reactions.put(e, i);
+				}
+			} catch (SQLException e1) {}
+		}
+	}
 	
 	@Override
 	public boolean called(MessageReactionAddEvent event, ReactionEmote react) {
@@ -62,6 +96,20 @@ public class MJFlag implements Reaction {
 			}
 		}
 		return false;
+	}
+	
+	public PreparedStatement prepareStatement(PreparedStatement ps){
+		int i = 1;
+		try {
+			ps.setLong(i, messageID);
+		} catch (SQLException e2) {}
+		for(EmoteValues e:EmoteValues.values()){
+			i++;
+			try {
+				ps.setInt(i, reactions.get(e).intValue());
+			} catch (SQLException e1) {}
+		}
+		return ps;
 	}
 
 }
