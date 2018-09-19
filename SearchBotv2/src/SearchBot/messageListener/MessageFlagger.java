@@ -14,17 +14,21 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 /**
  * Listener that flags messages as a certain type based on heuristics stuffs
+ * Also currently the main interface to control MJ points and such
  * @author Allen
  *
  */
 public class MessageFlagger implements BiPredicate<MessageReceivedEvent, BotGlobalConfig> {
-	private final ReactionController control;
-	private final ReactionTable table = new ReactionTable();
-	private final ArrayList<MJFlag> flags = new ArrayList<MJFlag>();
+	private final ReactionController control;//reaction controller for the bot
+	private final ReactionTable table = new ReactionTable();//table to persist the data
+	private final ArrayList<MJFlag> flags = new ArrayList<MJFlag>();//list of new flags added since last start
 	public MessageFlagger(ReactionController control){
 		this.control=control;
 	}
 	
+	/**
+	 * Main flagger, flags message as a mom joke or otherwise
+	 */
 	@Override
 	public boolean test(MessageReceivedEvent t, BotGlobalConfig u) {
 		if(t.getMessage().getContent().contains("mom joke")){
@@ -34,7 +38,9 @@ public class MessageFlagger implements BiPredicate<MessageReceivedEvent, BotGlob
 		//add Reaction to Reaction Controller Stuffs
 		return false;
 	}
-	
+	/**
+	 * Saves to table
+	 */
 	public void save(){
 		for(MJFlag mjf : flags){
 			try {
@@ -42,7 +48,13 @@ public class MessageFlagger implements BiPredicate<MessageReceivedEvent, BotGlob
 			} catch (SQLException e) {}
 		}
 	}
-	
+	/**
+	 * Does everything that's needed to mark a message as a mom joke
+	 * - adds reactions
+	 * - adds to reaction controller
+	 * - adds to internal cache of MJFlags added
+	 * @param msg
+	 */
 	public void addFlag(Message msg){
 		MJFlag mjf = new MJFlag(msg.getIdLong());
 		control.addReaction(msg, mjf);

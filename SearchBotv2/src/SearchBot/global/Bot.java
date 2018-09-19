@@ -1,6 +1,7 @@
 package SearchBot.global;
 
 import JDABotFramework.launcher.DiscordBot;
+import SearchBot.data.h2Connector;
 import SearchBot.messageListener.MessageFlagger;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
@@ -20,6 +21,7 @@ public class Bot extends DiscordBot {
 
 	@Override
 	public String help(MessageReceivedEvent event) {
+		//Generic help header TODO add more stuff
 		String s = "__***Help List***__\n"
 				+ "Use "+config.getPrefix(event.getGuild())+"help [command] "
 				+ "to get more info on a specific command, i.e.: "+config.getPrefix(event.getGuild())+"help ping\n\n";
@@ -29,6 +31,11 @@ public class Bot extends DiscordBot {
 	@Override
 	public String modHelp(MessageReceivedEvent event) {
 		return null;
+	}
+
+	@Override
+	protected void shutdown() {
+		h2Connector.shutdown();
 	}
 
 }

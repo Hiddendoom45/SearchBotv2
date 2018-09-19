@@ -18,8 +18,9 @@ public class h2Store implements StorageInt {
 	public void setup(){
 		Connection conn;
 		try{
+			//Generic create the table, contains a key and value
 			conn = h2Connector.getConnectionPool().getConnection();
-			conn.createStatement().execute("CREATE TABLE IF NOT EXISTS K_VSTORE (KEY TEXT UNIQUE,VALUE STRING)");
+			conn.createStatement().execute("CREATE TABLE IF NOT EXISTS K_VSTORE (KEY VARCHAR UNIQUE,VALUE VARCHAR)");
 		}catch(SQLException e){
 			
 		}
