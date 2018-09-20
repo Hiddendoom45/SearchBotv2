@@ -27,9 +27,7 @@ public class h2Store implements StorageInt {
 	}
 	@Override
 	public String getString(String key) {
-		Connection conn;
-		try {
-			conn = h2Connector.getConnectionPool().getConnection();
+		try (Connection conn = h2Connector.getConnectionPool().getConnection()) {
 			PreparedStatement ps = conn.prepareStatement("SELECT (VALUE) FROM K_VSTORE WHERE KEY=?");
 			ps.setString(1, key);
 			ResultSet rs = ps.executeQuery();
@@ -42,15 +40,11 @@ public class h2Store implements StorageInt {
 			
 		}
 		return "";
-		
-		
 	}
 
 	@Override
 	public void setString(String key, String value) {
-		Connection conn;
-		try {
-			conn = h2Connector.getConnectionPool().getConnection();
+		try (Connection conn = h2Connector.getConnectionPool().getConnection()){
 			PreparedStatement ps = conn.prepareStatement("MERGE INTO K_VSTORE (KEY,VALUE) KEY(KEY) VALUES (?,?)");
 			ps.setString(1, key);
 			ps.setString(2, value);
@@ -63,9 +57,7 @@ public class h2Store implements StorageInt {
 
 	@Override
 	public Optional<Long> getLong(String key) {
-		Connection conn;
-		try{
-			conn = h2Connector.getConnectionPool().getConnection();
+		try (Connection conn = h2Connector.getConnectionPool().getConnection()){
 			PreparedStatement ps = conn.prepareStatement("SELECT VALUE FROM K_VSTORE WHERE KEY=?");
 			ps.setString(1, key);
 			ResultSet rs = ps.executeQuery();
@@ -81,9 +73,7 @@ public class h2Store implements StorageInt {
 
 	@Override
 	public void setLong(String key, long value) {
-		Connection conn;
-		try{
-			conn = h2Connector.getConnectionPool().getConnection();
+		try (Connection conn = h2Connector.getConnectionPool().getConnection();){
 			PreparedStatement ps = conn.prepareStatement("MERGE INTO K_VSTORE KEY(KEY) VALUES (?,?)");
 			ps.setString(1, key);
 			ps.setString(2, ""+value);
@@ -96,9 +86,7 @@ public class h2Store implements StorageInt {
 
 	@Override
 	public void unsetKey(String key) {
-		Connection conn;
-		try{
-			conn = h2Connector.getConnectionPool().getConnection();
+		try (Connection conn = h2Connector.getConnectionPool().getConnection()){
 			PreparedStatement ps = conn.prepareStatement("DELETE FROM K_VSTORE WHERE KEY = ?");
 			ps.setString(1, key);
 			ps.executeUpdate();
