@@ -19,8 +19,8 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
  *
  */
 public class MessageFlagger implements BiPredicate<MessageReceivedEvent, BotGlobalConfig> {
-	private final ReactionController control;//reaction controller for the bot
-	private final ReactionTable table = new ReactionTable();//table to persist the data
+	public final ReactionController control;//reaction controller for the bot
+	public final ReactionTable table = new ReactionTable();//table to persist the data
 	private final ArrayList<MJFlag> flags = new ArrayList<MJFlag>();//list of new flags added since last start
 	public MessageFlagger(ReactionController control){
 		this.control=control;
@@ -56,7 +56,7 @@ public class MessageFlagger implements BiPredicate<MessageReceivedEvent, BotGlob
 	 * @param msg
 	 */
 	public void addFlag(Message msg){
-		MJFlag mjf = new MJFlag(msg.getIdLong());
+		MJFlag mjf = new MJFlag(msg.getIdLong(),msg.getAuthor().getIdLong());
 		control.addReaction(msg, mjf);
 		flags.add(mjf);
 		//Adds all the valid emotes as reactions
@@ -68,5 +68,14 @@ public class MessageFlagger implements BiPredicate<MessageReceivedEvent, BotGlob
 				msg.addReaction(msg.getJDA().getEmoteById(e.id));
 			}
 		}
+	}
+	/**
+	 * Adds an old joke to the cached list
+	 * @param msg old message
+	 * @param flag old flag object
+	 */
+	public void addFlag(Message msg,MJFlag flag){
+		control.addReaction(msg, flag);
+		flags.add(flag);
 	}
 }

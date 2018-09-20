@@ -3,15 +3,19 @@ package SearchBot.global;
 import JDABotFramework.launcher.DiscordBot;
 import SearchBot.data.h2Connector;
 import SearchBot.messageListener.MessageFlagger;
+import SearchBot.messageListener.OldMJListener;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 
 public class Bot extends DiscordBot {
 	//TODO add something to store stuff from flagger
-	
+	private MessageFlagger flagger;
 	public Bot(BotInit init) {
 		super(init);
 		//add flagger stuffs
-		main.getEventChain(MessageReceivedEvent.class).addListener("Flagger", new MessageFlagger(react));
+		flagger = new MessageFlagger(react);
+		main.getEventChain(MessageReceivedEvent.class).addListener("MJFlagger", new MessageFlagger(react));
+		main.getEventChain(MessageReactionAddEvent.class).addListener("OldMJ", new OldMJListener(flagger));
 	}
 
 	@Override
@@ -35,6 +39,7 @@ public class Bot extends DiscordBot {
 
 	@Override
 	protected void shutdown() {
+		flagger.save();
 		h2Connector.shutdown();
 	}
 

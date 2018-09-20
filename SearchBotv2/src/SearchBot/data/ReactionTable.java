@@ -2,6 +2,7 @@ package SearchBot.data;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -42,15 +43,24 @@ public class ReactionTable {
 	public void saveMJFlag(MJFlag f) throws SQLException{
 		Connection conn = h2Connector.getConnectionPool().getConnection();
 		//merge in the case of updating old ones
-		PreparedStatement ps = conn.prepareStatement("MERGE INTO MJREACTION (ID,"+
+		PreparedStatement ps = conn.prepareStatement("MERGE INTO MJREACTION (ID, USER_ID"+
 				Arrays.stream(EmoteValues.values()).map(e -> e.emoteText).collect(Collectors.joining(","))+")  KEY(ID) VALUES(?,"+
 				Arrays.stream(EmoteValues.values()).map(e -> "?").collect(Collectors.joining(","))+")");
+		
 		f.prepareStatement(ps).executeUpdate();
 	}
 	/**
 	 * Get an old flag from the table by messageID
+	 * @throws SQLException 
 	 */
-	public void pollMJFlag(){
-		
+	public MJFlag pollMJFlag(long id) throws SQLException{
+		Connection conn = h2Connector.getConnectionPool().getConnection();
+		PreparedStatement ps = conn.prepareStatement("SELECT * FROM MJREACTION WHERE ID = ?");
+		ps.setLong(1, id);
+		ResultSet rs = ps.executeQuery();
+		if(rs.next()){
+			return new MJFlag(rs);
+		}
+		else return null;
 	}
 }

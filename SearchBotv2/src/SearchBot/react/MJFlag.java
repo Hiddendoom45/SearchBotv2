@@ -21,8 +21,10 @@ import net.dv8tion.jda.core.events.message.react.MessageReactionRemoveEvent;
 public class MJFlag implements Reaction {
 	private final HashMap<EmoteValues,Integer> reactions = new HashMap<EmoteValues,Integer>();
 	private final long messageID;
-	public MJFlag(long messageID){
+	private final long userID;
+	public MJFlag(long messageID,long userID){
 		this.messageID=messageID;
+		this.userID=userID;
 	}
 	/**
 	 * Constructs the reaction using the current row of the resultset.
@@ -37,6 +39,12 @@ public class MJFlag implements Reaction {
 			l=-1;//generic error ID;
 		}
 		messageID = l;
+		try{
+			l = s.getLong("USER_ID");
+		} catch(SQLException e3){
+			l = -1;
+		}
+		userID=l;
 		for(EmoteValues e:EmoteValues.values()){
 			try {
 				int i = s.getInt(e.textName);
@@ -89,7 +97,7 @@ public class MJFlag implements Reaction {
 	@Override
 	public void executed(MessageReactionRemoveEvent event) {}
 	
-	private boolean validEmote(Emote emote){
+	public static boolean validEmote(Emote emote){
 		for(EmoteValues e:EmoteValues.values()){
 			if(e.name.equals(emote.getName())&&(e.id==emote.getIdLong())){
 				return true;
@@ -103,6 +111,10 @@ public class MJFlag implements Reaction {
 		try {
 			ps.setLong(i, messageID);
 		} catch (SQLException e2) {}
+		i++;
+		try{
+			ps.setLong(i, userID);
+		}catch(SQLException e3){}
 		for(EmoteValues e:EmoteValues.values()){
 			i++;
 			try {
