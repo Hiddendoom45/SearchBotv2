@@ -6,14 +6,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
-import JDABotFramework.storage.StorageInt;
+import JDABotFramework.storage.KeyStorageInt;
 
 /**
  * Effectively a key-value database using a relational database backend
  * @author Allen
  *
  */
-public class h2Store implements StorageInt {
+public class h2Store implements KeyStorageInt {
 	//create necessary tables
 	public void setup(){
 		Connection conn;
