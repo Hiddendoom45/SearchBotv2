@@ -31,7 +31,7 @@ public class MessageFlagger implements BiPredicate<MessageReceivedEvent, BotGlob
 	 */
 	@Override
 	public boolean test(MessageReceivedEvent t, BotGlobalConfig u) {
-		if(t.getMessage().getContent().contains("mom joke")){
+		if(t.getMessage().getContentRaw().contains("mom joke")){
 			addFlag(t.getMessage());
 			return true;
 		}
