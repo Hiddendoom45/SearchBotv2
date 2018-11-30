@@ -96,15 +96,13 @@ public class h2Store implements KeyStorageInt {
 	}
 
 	@Override
-	public void push() {
-		// TODO Auto-generated method stub
-
+	public boolean push() {
+		return false;
 	}
 
 	@Override
-	public void pull() {
-		// TODO Auto-generated method stub
-
+	public boolean pull() {
+		return false;
 	}
 
 }
